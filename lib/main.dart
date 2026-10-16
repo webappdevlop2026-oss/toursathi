@@ -30,6 +30,43 @@ class _TourHomeState extends State<TourHome> {
  ('ডেমো প্যান্ডেল — দুর্গাপুর','দুর্গাপুর',23.5500,87.3000),
  ];
  void soon(String title) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(title+' — সার্ভার সংযোগের পর চালু হবে')));
+
+ void openSection(String title) {
+   if(title.contains('প্যান্ডেল')) {
+    Navigator.push(context,MaterialPageRoute(builder:(ctx)=>Scaffold(appBar:AppBar(title:Text(title)),body:ListView(children:[
+      const ListTile(title:Text('ডেমো প্যান্ডেল তালিকা'),subtitle:Text('প্রকৃত প্যান্ডেলের তথ্য এখনো যাচাই হয়নি')),
+      for(final p in places) ListTile(
+        leading:const Icon(Icons.temple_hindu,color:Colors.deepOrange),
+        title:Text(p.$1),subtitle:Text(p.$2),
+        trailing:IconButton(icon:const Icon(Icons.directions,color:Colors.blue),onPressed:()=>route(p.$3,p.$4)),
+      )
+    ]))));
+    return;
+   }
+   if(title.contains('রুট') || title.contains('হপিং') || title.contains('ট্যুর')) {openPlanner();return;}
+   showDialog(context:context,builder:(ctx)=>AlertDialog(title:Text(title),
+     content:const Text('এই বিভাগের লাইভ তথ্যের জন্য যাচাই করা ডেটা ও ব্যাকএন্ড সংযোগ প্রয়োজন।'),
+     actions:[TextButton(onPressed:()=>Navigator.pop(ctx),child:const Text('বন্ধ করুন'))]));
+ }
+ Future<void> openPlanner() async {
+   final ids=saved.toList()..sort();
+   await showModalBottomSheet(context:context,showDragHandle:true,isScrollControlled:true,
+   builder:(ctx)=>SafeArea(child:Padding(padding:const EdgeInsets.all(20),child:Column(mainAxisSize:MainAxisSize.min,
+   crossAxisAlignment:CrossAxisAlignment.start,children:[
+    const Text('আমার পুজো ট্যুর',style:TextStyle(fontSize:23,fontWeight:FontWeight.bold)),
+    Text(ids.isEmpty?'প্রথমে প্যান্ডেলের কার্ডে হার্ট চিহ্নে চাপ দিন।':ids.length.toString()+'টি প্যান্ডেল নির্বাচিত'),
+    for(final i in ids) ListTile(leading:const Icon(Icons.favorite,color:Colors.red),title:Text(places[i].$1)),
+    const SizedBox(height:12),
+    SizedBox(width:double.infinity,child:FilledButton.icon(
+     onPressed:ids.isEmpty?null:() async {
+      final last=places[ids.last];
+      final points=ids.take(ids.length-1).map((i)=>places[i].$3.toString()+','+places[i].$4.toString()).join('|');
+      final params=<String,String>{'api':'1','destination':last.$3.toString()+','+last.$4.toString(),'travelmode':'driving'};
+      if(points.isNotEmpty)params['waypoints']=points;
+      await launchUrl(Uri.https('www.google.com','/maps/dir/',params),mode:LaunchMode.externalApplication);
+     },icon:const Icon(Icons.map),label:const Text('Google Maps-এ রুট দেখুন')))
+   ])))));
+ }
  Future<void> route(double lat,double lng) async {
  final url=Uri.https('www.google.com','/maps/dir/',{'api':'1','destination':lat.toString()+','+lng.toString(),'travelmode':'driving'});
  if(!await launchUrl(url,mode:LaunchMode.externalApplication)) soon('Maps');
@@ -57,9 +94,9 @@ class _TourHomeState extends State<TourHome> {
  for(var i=0;i<4;i++) Padding(padding:const EdgeInsets.only(right:6),child:ChoiceChip(selectedColor:Colors.blue,selected:vehicle==i,onSelected:(_)=>setState(()=>vehicle=i),label:Text(['গাড়ি','বাইক','বাস','ট্রেন'][i]),avatar:Icon([Icons.directions_car,Icons.two_wheeler,Icons.directions_bus,Icons.train][i],size:19)))
  ])),
  Row(children:[const Text('প্যান্ডেল সার্চ ব্যাসার্ধ'),const Spacer(),DropdownButton<int>(value:radius,items:[5,10,15,20,30].map((v)=>DropdownMenuItem(value:v,child:Text(v.toString()+' কিমি'))).toList(),onChanged:(v)=>setState(()=>radius=v??10))]),
- SizedBox(width:double.infinity,child:FilledButton.icon(onPressed:()=>soon('ট্যুর পরিকল্পনা'),style:FilledButton.styleFrom(backgroundColor:const Color(0xfff5083c),padding:const EdgeInsets.all(14)),icon:const Icon(Icons.search),label:const Text('ট্যুর পরিকল্পনা করুন',style:TextStyle(fontSize:18,fontWeight:FontWeight.bold))))
+ SizedBox(width:double.infinity,child:FilledButton.icon(onPressed:openPlanner,style:FilledButton.styleFrom(backgroundColor:const Color(0xfff5083c),padding:const EdgeInsets.all(14)),icon:const Icon(Icons.search),label:const Text('ট্যুর পরিকল্পনা করুন',style:TextStyle(fontSize:18,fontWeight:FontWeight.bold))))
  ])),
- Container(margin:const EdgeInsets.symmetric(horizontal:10),padding:const EdgeInsets.all(8),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(20)),child:GridView.builder(shrinkWrap:true,physics:const NeverScrollableScrollPhysics(),itemCount:categories.length,gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3,childAspectRatio:.90,crossAxisSpacing:8,mainAxisSpacing:8),itemBuilder:(ctx,i){final c=categories[i];return InkWell(onTap:()=>soon(c.$2),child:Column(children:[
+ Container(margin:const EdgeInsets.symmetric(horizontal:10),padding:const EdgeInsets.all(8),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(20)),child:GridView.builder(shrinkWrap:true,physics:const NeverScrollableScrollPhysics(),itemCount:categories.length,gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3,childAspectRatio:.90,crossAxisSpacing:8,mainAxisSpacing:8),itemBuilder:(ctx,i){final c=categories[i];return InkWell(onTap:()=>openSection(c.$2),child:Column(children:[
  Expanded(child:Container(width:double.infinity,decoration:BoxDecoration(color:c.$4,borderRadius:BorderRadius.circular(13)),child:Icon(c.$1,color:c.$5,size:47))),
  const SizedBox(height:3),Text(c.$2,maxLines:1,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:11,fontWeight:FontWeight.bold)),
  Text(c.$3,maxLines:1,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:10,color:Colors.blueGrey))
@@ -81,14 +118,14 @@ class _TourHomeState extends State<TourHome> {
  Expanded(child:_promo('আমার পুজো ট্যুর','নিজের রুট তৈরি করুন',Colors.green,Icons.route)),
  Expanded(child:_promo('বন্ধুদের সাথে লাইভ ট্যুর','গ্রুপ তৈরি করুন',Colors.deepPurple,Icons.groups))
  ]))
- ])),bottomNavigationBar:NavigationBar(height:67,selectedIndex:tab,onDestinationSelected:(i){setState(()=>tab=i);if(i!=0)soon(['হোম','প্যান্ডেল','রুট','খাবার','হোটেল','আরও'][i]);},destinations:const [
+ ])),bottomNavigationBar:NavigationBar(height:67,selectedIndex:tab,onDestinationSelected:(i){setState(()=>tab=i);if(i!=0)openSection(['হোম','প্যান্ডেল','রুট','খাবার','হোটেল','আরও'][i]);},destinations:const [
  NavigationDestination(icon:Icon(Icons.home),label:'হোম'),NavigationDestination(icon:Icon(Icons.location_on),label:'প্যান্ডেল'),NavigationDestination(icon:Icon(Icons.route),label:'রুট'),NavigationDestination(icon:Icon(Icons.restaurant),label:'খাবার'),NavigationDestination(icon:Icon(Icons.hotel),label:'হোটেল'),NavigationDestination(icon:Icon(Icons.grid_view),label:'আরও')
  ]));
  }
  Widget _input(String label,String value,Color color,ValueChanged<String> onChange)=>Container(padding:const EdgeInsets.all(8),decoration:BoxDecoration(border:Border.all(color:Colors.black12),borderRadius:BorderRadius.circular(12)),child:Row(children:[
  Icon(Icons.location_on,color:color,size:24),const SizedBox(width:4),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(label,style:const TextStyle(fontSize:10,color:Colors.blueGrey)),TextFormField(initialValue:value,onChanged:onChange,decoration:const InputDecoration(isDense:true,border:InputBorder.none,contentPadding:EdgeInsets.zero),style:const TextStyle(fontSize:14,fontWeight:FontWeight.bold))]))
  ]));
- Widget _promo(String title,String subtitle,Color color,IconData icon)=>InkWell(onTap:()=>soon(title),child:Container(width:225,margin:const EdgeInsets.only(right:8),padding:const EdgeInsets.all(11),decoration:BoxDecoration(color:color,borderRadius:BorderRadius.circular(14)),child:Stack(children:[Positioned(right:0,bottom:0,child:Icon(icon,size:75,color:Colors.white24)),Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:const TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:16)),Text(subtitle,style:const TextStyle(color:Colors.white70,fontSize:12))])]))); 
+ Widget _promo(String title,String subtitle,Color color,IconData icon)=>InkWell(onTap:()=>openSection(title),child:Container(width:225,margin:const EdgeInsets.only(right:8),padding:const EdgeInsets.all(11),decoration:BoxDecoration(color:color,borderRadius:BorderRadius.circular(14)),child:Stack(children:[Positioned(right:0,bottom:0,child:Icon(icon,size:75,color:Colors.white24)),Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:const TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:16)),Text(subtitle,style:const TextStyle(color:Colors.white70,fontSize:12))])]))); 
  Widget _photoPromo(String title,String subtitle,String photo,IconData icon)=>InkWell(
  onTap:()=>soon(title),
  child:Container(width:225,margin:const EdgeInsets.only(right:8),clipBehavior:Clip.antiAlias,
