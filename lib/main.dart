@@ -38,7 +38,8 @@ class _TourHomeState extends State<TourHome> {
  final matches=places.asMap().entries.where((e)=>(e.value.$1+e.value.$2).contains(filter)).toList();
  return Scaffold(backgroundColor:const Color(0xfffff9ef),body:SafeArea(child:ListView(children:[
  Container(constraints:const BoxConstraints(minHeight:310),padding:const EdgeInsets.all(15),decoration:const BoxDecoration(gradient:LinearGradient(colors:[Color(0xff031038),Color(0xff172258),Color(0xffb52f16)])),child:Stack(children:[
- Positioned(right:0,top:35,child:Icon(Icons.temple_hindu,size:175,color:Colors.amber.withOpacity(.45))),
+ Positioned.fill(child:Image.network('https://images.unsplash.com/photo-1604541915015-5c2f956bf2c2?w=800&q=80',fit:BoxFit.cover,errorBuilder:(context,error,stack)=>const ColoredBox(color:Color(0xff0b1743)))),
+ Positioned.fill(child:Container(color:const Color(0x99051330))),
  Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
  Row(children:[const Icon(Icons.location_on,color:Colors.white),const Expanded(child:Text('দুর্গাপুর, পশ্চিমবঙ্গ ⌄',style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:17))),IconButton(onPressed:()=>soon('আবহাওয়া'),icon:const Icon(Icons.wb_cloudy,color:Colors.amber)),IconButton(onPressed:()=>soon('নোটিফিকেশন'),icon:const Icon(Icons.notifications,color:Colors.white)),const CircleAvatar(radius:15,child:Icon(Icons.person))]),
  const SizedBox(height:25),const Text('শুভ',style:TextStyle(fontSize:29,color:Colors.amber,fontWeight:FontWeight.w900)),
@@ -59,20 +60,20 @@ class _TourHomeState extends State<TourHome> {
  SizedBox(width:double.infinity,child:FilledButton.icon(onPressed:()=>soon('ট্যুর পরিকল্পনা'),style:FilledButton.styleFrom(backgroundColor:const Color(0xfff5083c),padding:const EdgeInsets.all(14)),icon:const Icon(Icons.search),label:const Text('ট্যুর পরিকল্পনা করুন',style:TextStyle(fontSize:18,fontWeight:FontWeight.bold))))
  ])),
  Container(margin:const EdgeInsets.symmetric(horizontal:10),padding:const EdgeInsets.all(8),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(20)),child:GridView.builder(shrinkWrap:true,physics:const NeverScrollableScrollPhysics(),itemCount:categories.length,gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3,childAspectRatio:.90,crossAxisSpacing:8,mainAxisSpacing:8),itemBuilder:(ctx,i){final c=categories[i];return InkWell(onTap:()=>soon(c.$2),child:Column(children:[
- Expanded(child:Container(width:double.infinity,decoration:BoxDecoration(color:c.$4,borderRadius:BorderRadius.circular(13)),child:Icon(c.$1,color:c.$5,size:37))),
+ Expanded(child:Container(width:double.infinity,decoration:BoxDecoration(color:c.$4,borderRadius:BorderRadius.circular(13)),child:Icon(c.$1,color:c.$5,size:47))),
  const SizedBox(height:3),Text(c.$2,maxLines:1,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:11,fontWeight:FontWeight.bold)),
  Text(c.$3,maxLines:1,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:10,color:Colors.blueGrey))
  ]));})),
  SizedBox(height:135,child:ListView(scrollDirection:Axis.horizontal,padding:const EdgeInsets.all(10),children:[
- _promo('দুর্গাপুরের সেরা প্যান্ডেল','পুজো গাইড',const Color(0xff0a1745),Icons.temple_hindu),
- _promo('পুজো স্পেশাল খাবার','ফুচকা • বিরিয়ানি • মিষ্টি',const Color(0xff8c3a17),Icons.restaurant),
- _promo('আরামদায়ক হোটেল','পরিবার ও গ্রুপের জন্য',const Color(0xff665033),Icons.hotel),
+ _photoPromo('দুর্গাপুরের সেরা প্যান্ডেল','পুজো গাইড','https://images.unsplash.com/photo-1604541915015-5c2f956bf2c2?w=800&q=80',Icons.temple_hindu),
+ _photoPromo('পুজো স্পেশাল খাবার','ফুচকা • বিরিয়ানি • মিষ্টি','https://images.unsplash.com/photo-1547573854-74d2a71d0826?w=800&q=80',Icons.restaurant),
+ _photoPromo('আরামদায়ক হোটেল','পরিবার ও গ্রুপের জন্য','https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',Icons.hotel),
  ])),
  const Padding(padding:EdgeInsets.all(12),child:Text('🔥 জনপ্রিয় প্যান্ডেল (দুর্গাপুর)',style:TextStyle(fontSize:20,fontWeight:FontWeight.bold))),
  Padding(padding:const EdgeInsets.symmetric(horizontal:12),child:TextField(onChanged:(v)=>setState(()=>filter=v.trim()),decoration:InputDecoration(prefixIcon:const Icon(Icons.search),hintText:'প্যান্ডেল অথবা এলাকা খুঁজুন',filled:true,fillColor:Colors.white,border:OutlineInputBorder(borderRadius:BorderRadius.circular(13))))),
  const Padding(padding:EdgeInsets.fromLTRB(14,6,14,10),child:Text('ডেমো নাম ও আনুমানিক লোকেশন — বাস্তব প্যান্ডেল নয়',style:TextStyle(fontSize:12,color:Colors.deepOrange))),
  GridView.builder(shrinkWrap:true,physics:const NeverScrollableScrollPhysics(),padding:const EdgeInsets.symmetric(horizontal:10),itemCount:matches.length,gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,mainAxisSpacing:10,crossAxisSpacing:10,childAspectRatio:.91),itemBuilder:(ctx,i){final entry=matches[i],p=entry.value;return Card(clipBehavior:Clip.antiAlias,color:Colors.white,child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
- Expanded(child:Container(width:double.infinity,color:const Color(0xff111944),child:const Column(mainAxisAlignment:MainAxisAlignment.center,children:[Icon(Icons.temple_hindu,color:Colors.amber,size:55),Text('ছবি শীঘ্রই আসছে',style:TextStyle(color:Colors.white,fontSize:11))]))),
+ Expanded(child:SizedBox(width:double.infinity,child:Image.network('https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=800&q=80',fit:BoxFit.cover,errorBuilder:(ctx,error,stack)=>const ColoredBox(color:Color(0xff111944),child:Center(child:Icon(Icons.temple_hindu,color:Colors.amber,size:55)))))),
  Row(children:[Expanded(child:Padding(padding:const EdgeInsets.only(left:7),child:Text(p.$1,maxLines:1,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:12,fontWeight:FontWeight.bold)))),IconButton(icon:Icon(saved.contains(entry.key)?Icons.favorite:Icons.favorite_border,color:Colors.red),onPressed:()=>setState(()=>saved.contains(entry.key)?saved.remove(entry.key):saved.add(entry.key)))]),
  Row(children:[const Icon(Icons.location_on,size:15,color:Colors.deepOrange),Expanded(child:Text(p.$2,maxLines:1,style:const TextStyle(fontSize:11))),IconButton(onPressed:()=>route(p.$3,p.$4),icon:const Icon(Icons.directions,color:Colors.blue))])
  ]));}),
@@ -88,4 +89,17 @@ class _TourHomeState extends State<TourHome> {
  Icon(Icons.location_on,color:color,size:24),const SizedBox(width:4),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(label,style:const TextStyle(fontSize:10,color:Colors.blueGrey)),TextFormField(initialValue:value,onChanged:onChange,decoration:const InputDecoration(isDense:true,border:InputBorder.none,contentPadding:EdgeInsets.zero),style:const TextStyle(fontSize:14,fontWeight:FontWeight.bold))]))
  ]));
  Widget _promo(String title,String subtitle,Color color,IconData icon)=>InkWell(onTap:()=>soon(title),child:Container(width:225,margin:const EdgeInsets.only(right:8),padding:const EdgeInsets.all(11),decoration:BoxDecoration(color:color,borderRadius:BorderRadius.circular(14)),child:Stack(children:[Positioned(right:0,bottom:0,child:Icon(icon,size:75,color:Colors.white24)),Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:const TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:16)),Text(subtitle,style:const TextStyle(color:Colors.white70,fontSize:12))])]))); 
+ Widget _photoPromo(String title,String subtitle,String photo,IconData icon)=>InkWell(
+ onTap:()=>soon(title),
+ child:Container(width:225,margin:const EdgeInsets.only(right:8),clipBehavior:Clip.antiAlias,
+ decoration:BoxDecoration(color:const Color(0xff111944),borderRadius:BorderRadius.circular(14)),
+ child:Stack(fit:StackFit.expand,children:[
+ Image.network(photo,fit:BoxFit.cover,errorBuilder:(ctx,error,stack)=>Center(child:Icon(icon,color:Colors.amber,size:70))),
+ Container(color:const Color(0x88000000)),
+ Padding(padding:const EdgeInsets.all(11),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+ Text(title,style:const TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:16)),
+ Text(subtitle,style:const TextStyle(color:Colors.white70,fontSize:12))
+ ]))
+ ])));
+
 }
