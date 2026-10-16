@@ -65,7 +65,7 @@ class _TourHomeState extends State<TourHome> {
       if(points.isNotEmpty)params['waypoints']=points;
       await launchUrl(Uri.https('www.google.com','/maps/dir/',params),mode:LaunchMode.externalApplication);
      },icon:const Icon(Icons.map),label:const Text('Google Maps-এ রুট দেখুন')))
-   ])))));
+   ]))));
  }
  Future<void> route(double lat,double lng) async {
  final url=Uri.https('www.google.com','/maps/dir/',{'api':'1','destination':lat.toString()+','+lng.toString(),'travelmode':'driving'});
