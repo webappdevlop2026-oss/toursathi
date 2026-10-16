@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'tour_sections.dart';
 void main() => runApp(const MaterialApp(debugShowCheckedModeBanner:false,home:TourHome()));
 class TourHome extends StatefulWidget {
  const TourHome({super.key});
@@ -44,9 +45,7 @@ class _TourHomeState extends State<TourHome> {
     return;
    }
    if(title.contains('রুট') || title.contains('হপিং') || title.contains('ট্যুর')) {openPlanner();return;}
-   showDialog(context:context,builder:(ctx)=>AlertDialog(title:Text(title),
-     content:const Text('এই বিভাগের লাইভ তথ্যের জন্য যাচাই করা ডেটা ও ব্যাকএন্ড সংযোগ প্রয়োজন।'),
-     actions:[TextButton(onPressed:()=>Navigator.pop(ctx),child:const Text('বন্ধ করুন'))]));
+   Navigator.push(context,MaterialPageRoute(builder:(ctx)=>TourSectionPage(section:title)));
  }
  Future<void> openPlanner() async {
    final ids=saved.toList()..sort();
@@ -127,7 +126,7 @@ class _TourHomeState extends State<TourHome> {
  ]));
  Widget _promo(String title,String subtitle,Color color,IconData icon)=>InkWell(onTap:()=>openSection(title),child:Container(width:225,margin:const EdgeInsets.only(right:8),padding:const EdgeInsets.all(11),decoration:BoxDecoration(color:color,borderRadius:BorderRadius.circular(14)),child:Stack(children:[Positioned(right:0,bottom:0,child:Icon(icon,size:75,color:Colors.white24)),Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:const TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:16)),Text(subtitle,style:const TextStyle(color:Colors.white70,fontSize:12))])]))); 
  Widget _photoPromo(String title,String subtitle,String photo,IconData icon)=>InkWell(
- onTap:()=>soon(title),
+ onTap:()=>openSection(title),
  child:Container(width:225,margin:const EdgeInsets.only(right:8),clipBehavior:Clip.antiAlias,
  decoration:BoxDecoration(color:const Color(0xff111944),borderRadius:BorderRadius.circular(14)),
  child:Stack(fit:StackFit.expand,children:[
