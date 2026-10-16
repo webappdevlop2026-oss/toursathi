@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'tour_sections.dart';
+import 'festival_slider.dart';
 void main() => runApp(const MaterialApp(debugShowCheckedModeBanner:false,home:TourHome()));
 class TourHome extends StatefulWidget {
  const TourHome({super.key});
@@ -95,6 +96,7 @@ class _TourHomeState extends State<TourHome> {
  Row(children:[const Text('প্যান্ডেল সার্চ ব্যাসার্ধ'),const Spacer(),DropdownButton<int>(value:radius,items:[5,10,15,20,30].map((v)=>DropdownMenuItem(value:v,child:Text(v.toString()+' কিমি'))).toList(),onChanged:(v)=>setState(()=>radius=v??10))]),
  SizedBox(width:double.infinity,child:FilledButton.icon(onPressed:openPlanner,style:FilledButton.styleFrom(backgroundColor:const Color(0xfff5083c),padding:const EdgeInsets.all(14)),icon:const Icon(Icons.search),label:const Text('ট্যুর পরিকল্পনা করুন',style:TextStyle(fontSize:18,fontWeight:FontWeight.bold))))
  ])),
+ const FestivalSlider(),
  Container(margin:const EdgeInsets.symmetric(horizontal:10),padding:const EdgeInsets.all(8),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(20)),child:GridView.builder(shrinkWrap:true,physics:const NeverScrollableScrollPhysics(),itemCount:categories.length,gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3,childAspectRatio:.90,crossAxisSpacing:8,mainAxisSpacing:8),itemBuilder:(ctx,i){final c=categories[i];return InkWell(onTap:()=>openSection(c.$2),child:Column(children:[
  Expanded(child:Container(width:double.infinity,decoration:BoxDecoration(color:c.$4,borderRadius:BorderRadius.circular(13)),child:Icon(c.$1,color:c.$5,size:47))),
  const SizedBox(height:3),Text(c.$2,maxLines:1,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:11,fontWeight:FontWeight.bold)),
