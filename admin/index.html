@@ -1,1 +1,192 @@
-<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TourSathi Admin Demo</title><style>body{font:16px system-ui;background:#f4f6fb;color:#132143;margin:0}header{background:#162248;color:white;padding:22px}main{max-width:850px;margin:25px auto;padding:18px}.card{background:white;padding:22px;border-radius:16px;margin-bottom:16px}input,textarea{width:95%;padding:12px;margin:7px 0;border:1px solid #ccd;border-radius:8px}button{background:#ef2950;color:white;padding:12px 20px;border:0;border-radius:8px;cursor:pointer}li{padding:8px;border-bottom:1px solid #eee}</style></head><body><header><h2>TourSathi — Admin Panel (Demo)</h2></header><main><div class="card"><b>⚠️ শুধুমাত্র লোকাল UI ডেমো</b><p>লগইন, সার্ভার, অ্যাকাউন্ট ও স্থায়ী ডেটাবেস এখনো যুক্ত নয়। এই পৃষ্ঠা Public-এ deploy করবেন না।</p></div><div class="card"><h2>প্যান্ডেল তালিকা (এই ব্রাউজারে সাময়িক)</h2><ul id="list"></ul></div><div class="card"><h2>ডেমো প্যান্ডেল যোগ করুন</h2><input id="name" placeholder="প্যান্ডেলের নাম"><input id="area" placeholder="এলাকা"><textarea id="desc" placeholder="বিবরণ"></textarea><button onclick="add()">যোগ করুন</button></div></main><script>let data=[['ডেমো প্যান্ডেল ১','সিটি সেন্টার']];function render(){document.querySelector('#list').innerHTML=data.map((x,i)=>'<li>'+x[0]+' — '+x[1]+' <button onclick="del('+i+')">মুছুন</button></li>').join('')}function add(){let n=document.querySelector('#name').value.trim(),a=document.querySelector('#area').value.trim();if(!n||!a)return alert('নাম ও এলাকা লিখুন');data.push([n,a]);render();document.querySelector('#name').value='';document.querySelector('#area').value=''}function del(i){data.splice(i,1);render()}render()</script></body></html>
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>TourSathi Admin — ডেটা ম্যানেজার</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#c62828;--navy:#0b1743;--bg:#f4f6fb;--line:#dde2ee;--muted:#5d6475;--ok:#2e7d32}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Hind Siliguri',system-ui,sans-serif;background:var(--bg);color:#1d2333}
+header{background:var(--navy);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:20px;margin:0}
+header .tag{background:#ffc107;color:#000;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700}
+main{max-width:1200px;margin:0 auto;padding:16px;display:grid;grid-template-columns:380px 1fr;gap:16px}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.box{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.box h2{font-size:17px;margin:0 0 12px}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
+input,textarea,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px}
+textarea{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:700;cursor:pointer;background:#e8ecf6;color:#1d2333}
+.btn.primary{background:var(--red);color:#fff}
+.btn.ok{background:var(--ok);color:#fff}
+.btn.small{padding:5px 9px;font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.warn{background:#fff3e0;border:1px solid #ffcc80;color:#8d3c14;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted)}
+.badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap}
+.badge.v{background:#e8f5e9;color:var(--ok)}
+.badge.d{background:#fff3e0;color:#e65100}
+.muted{color:var(--muted);font-size:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.toolbar input{max-width:260px}
+.sched-row{display:grid;grid-template-columns:1fr 150px 1fr 34px;gap:6px;margin-bottom:6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2333;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none}
+.toast.show{opacity:1}
+.scroll{overflow-x:auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛕 TourSathi Admin</h1>
+  <span class="tag">ডেটা ম্যানেজার</span>
+  <span class="muted" style="color:#b9c3e8;margin-left:auto" id="stat"></span>
+</header>
+
+<main>
+  <div>
+    <div class="box">
+      <div class="warn"><b>লক্ষ্য করুন:</b> এই প্যানেলে লগইন নেই — ডেটা শুধু এই ব্রাউজারে (localStorage) থাকে। কাজ শেষে
+        <b>“JSON কপি”</b> করে অ্যাপের <b>আরও → ডেটা ইমপোর্ট</b>-এ পেস্ট করুন। পাবলিক সার্ভারে খোলা রাখবেন না।</div>
+      <h2 id="formTitle">নতুন প্যান্ডেল</h2>
+      <form id="f">
+        <input type="hidden" id="id">
+        <label>নাম *</label><input id="name" required placeholder="যেমন: বেনাচিতি সার্বজনীন">
+        <label>এলাকা *</label><input id="area" required list="areas" placeholder="সিটি সেন্টার">
+        <datalist id="areas"></datalist>
+        <label>লোকেশন * <span class="muted">(Google Maps-এ লম্বা চাপ দিয়ে কপি করা “lat, lng”)</span></label>
+        <input id="coords" required placeholder="23.5400, 87.2890">
+        <div class="row">
+          <div><label>থিম</label><input id="theme"></div>
+          <div><label>ছবির URL</label><input id="imageUrl" placeholder="https://…"></div>
+        </div>
+        <label>বিবরণ</label><textarea id="description"></textarea>
+        <label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="verified" style="width:auto"> তথ্য যাচাই করা হয়েছে</label>
+        <div class="btns">
+          <button class="btn primary" type="submit" id="saveBtn">সংরক্ষণ</button>
+          <button class="btn" type="button" id="resetBtn">নতুন / খালি</button>
+          <a class="btn" id="checkMap" target="_blank" rel="noopener">ম্যাপে যাচাই</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="box" style="margin-top:16px">
+      <h2>পুজোর সময়সূচি</h2>
+      <div id="sched"></div>
+      <div class="btns"><button class="btn small" id="addDay">+ দিন যোগ</button></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="box">
+      <div class="toolbar">
+        <input id="q" placeholder="খুঁজুন…">
+        <button class="btn ok" id="copyBtn">📋 JSON কপি (অ্যাপের জন্য)</button>
+        <button class="btn" id="dlBtn">⬇ JSON ডাউনলোড</button>
+        <label class="btn" style="margin:0">⬆ JSON ইমপোর্ট<input type="file" id="file" accept=".json,application/json" hidden></label>
+        <button class="btn" id="demoBtn">ডেমো ডেটা লোড</button>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>#</th><th>নাম</th><th>এলাকা</th><th>লোকেশন</th><th>অবস্থা</th><th></th></tr></thead>
+          <tbody id="list"></tbody>
+        </table>
+      </div>
+      <p class="muted" id="empty" style="display:none">এখনো কোনো প্যান্ডেল নেই। বাঁদিকের ফর্ম থেকে যোগ করুন।</p>
+    </div>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY="toursathi_admin_v1";
+const AREAS=["সিটি সেন্টার","বেনাচিতি","বিধাননগর","এ-জোন","বি-জোন","মুচিপাড়া","দুর্গাপুর স্টেশন"];
+const DEFAULT_SCHEDULE=[
+  {name:"মহাষষ্ঠী",date:"2026-10-16",note:"বোধন ও আমন্ত্রণ"},
+  {name:"মহাসপ্তমী",date:"2026-10-18",note:"নবপত্রিকা স্নান"},
+  {name:"মহাষ্টমী",date:"2026-10-19",note:"অঞ্জলি ও সন্ধিপুজো"},
+  {name:"মহানবমী",date:"2026-10-20",note:"নবমী পুজো ও ভোগ"},
+  {name:"বিজয়া দশমী",date:"2026-10-21",note:"সিঁদুর খেলা ও বিসর্জন"}];
+const DEMO=[
+  ["ডেমো প্যান্ডেল — সিটি সেন্টার","সিটি সেন্টার",23.54,87.289],
+  ["ডেমো প্যান্ডেল — বেনাচিতি বাজার","বেনাচিতি",23.552,87.297],
+  ["ডেমো প্যান্ডেল — বিধাননগর","বিধাননগর",23.522,87.312],
+  ["ডেমো প্যান্ডেল — এ-জোন","এ-জোন",23.547,87.316]];
+const $=id=>document.getElementById(id);
+let db=load();
+
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.pandals))return {pandals:d.pandals,schedule:d.schedule||DEFAULT_SCHEDULE.slice()};}catch(e){}
+  return {pandals:[],schedule:DEFAULT_SCHEDULE.slice()};
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){toast("ব্রাউজারে সংরক্ষণ করা গেল না");}render();}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200);}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function parseCoords(s){const p=String(s).split(/[,\s]+/).filter(Boolean).map(Number);
+  if(p.length!==2||p.some(isNaN)||Math.abs(p[0])>90||Math.abs(p[1])>180)return null;return p;}
+function exportData(){return {version:1,city:"দুর্গাপুর",updated:new Date().toISOString(),pandals:db.pandals,schedule:db.schedule};}
+
+$("areas").innerHTML=AREAS.map(a=>`<option value="${a}">`).join("");
+
+function render(){
+  const q=$("q").value.trim().toLowerCase();
+  const rows=db.pandals.filter(p=>(p.name+" "+p.area+" "+(p.theme||"")).toLowerCase().includes(q));
+  $("list").innerHTML=rows.map((p,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><b>${esc(p.name)}</b><div class="muted">${esc(p.theme||"")}</div></td>
+    <td>${esc(p.area)}</td>
+    <td><a href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}" target="_blank" rel="noopener">${(+p.lat).toFixed(4)}, ${(+p.lng).toFixed(4)}</a></td>
+    <td>${p.verified?'<span class="badge v">যাচাই করা</span>':'<span class="badge d">যাচাই বাকি</span>'}</td>
+    <td style="white-space:nowrap"><button class="btn small" onclick="edit('${p.id}')">এডিট</button>
+        <button class="btn small" onclick="del('${p.id}')">মুছুন</button></td></tr>`).join("");
+  $("empty").style.display=db.pandals.length?"none":"block";
+  const v=db.pandals.filter(p=>p.verified).length;
+  $("stat").textContent=`মোট ${db.pandals.length}টি প্যান্ডেল • যাচাই করা ${v}টি`;
+  $("sched").innerHTML=db.schedule.map((d,i)=>`<div class="sched-row">
+    <input value="${esc(d.name)}" onchange="db.schedule[${i}].name=this.value;save()">
+    <input type="date" value="${esc(d.date)}" onchange="db.schedule[${i}].date=this.value;save()">
+    <input value="${esc(d.note||"")}" placeholder="নোট" onchange="db.schedule[${i}].note=this.value;save()">
+    <button class="btn small" onclick="db.schedule.splice(${i},1);save()">✕</button></div>`).join("");
+}
+
+function resetForm(){$("f").reset();$("id").value="";$("formTitle").textContent="নতুন প্যান্ডেল";$("saveBtn").textContent="সংরক্ষণ";}
+window.edit=id=>{const p=db.pandals.find(x=>x.id===id);if(!p)return;
+  $("id").value=p.id;$("name").value=p.name;$("area").value=p.area;$("coords").value=p.lat+", "+p.lng;
+  $("theme").value=p.theme||"";$("imageUrl").value=p.imageUrl||"";$("description").value=p.description||"";$("verified").checked=!!p.verified;
+  $("formTitle").textContent="প্যান্ডেল এডিট";$("saveBtn").textContent="আপডেট";window.scrollTo({top:0,behavior:"smooth"});};
+window.del=id=>{if(confirm("মুছে ফেলবেন?")){db.pandals=db.pandals.filter(p=>p.id!==id);save();toast("মুছে ফেলা হয়েছে");}};
+
+$("f").addEventListener("submit",e=>{e.preventDefault();
+  const c=parseCoords($("coords").value);if(!c){toast("লোকেশন সঠিক নয় — যেমন 23.54, 87.28");return;}
+  const p={id:$("id").value||("p"+Date.now()),name:$("name").value.trim(),area:$("area").value.trim(),lat:c[0],lng:c[1],
+    theme:$("theme").value.trim(),imageUrl:$("imageUrl").value.trim(),description:$("description").value.trim(),verified:$("verified").checked};
+  const i=db.pandals.findIndex(x=>x.id===p.id);
+  if(i>=0)db.pandals[i]=p;else db.pandals.push(p);
+  save();resetForm();toast(i>=0?"আপডেট হয়েছে":"যোগ হয়েছে");});
+$("resetBtn").onclick=resetForm;
+$("checkMap").onclick=e=>{const c=parseCoords($("coords").value);
+  if(!c){e.preventDefault();toast("আগে লোকেশন লিখুন");return;}
+  e.currentTarget.href=`https://www.google.com/maps/search/?api=1&query=${c[0]},${c[1]}`;};
+$("q").oninput=render;
+$("addDay").onclick=()=>{db.schedule.push({name:"নতুন দিন",date:new Date().toISOString().slice(0,10),note:""});save();};
+$("copyBtn").onclick=async()=>{const txt=JSON.stringify(exportData());
+  try{await navigator.clipboard.writeText(txt);toast("কপি হয়েছে — অ্যাপে পেস্ট করুন");}
+  catch(e){prompt("নিচের লেখাটি কপি করুন:",txt);}};
+$("dlBtn").onclick=()=>{const b=new Blob([JSON.stringify(exportData(),null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="toursathi-data.json";a.click();URL.revokeObjectURL(a.href);};
+$("file").onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  try{const d=JSON.parse(await f.text());const list=Array.isArray(d)?d:d.pandals;
+    if(!Array.isArray(list))throw 0;db.pandals=list;if(Array.isArray(d.schedule))db.schedule=d.schedule;save();toast(`${list.length}টি প্যান্ডেল ইমপোর্ট হয়েছে`);}
+  catch(_){toast("ফাইলটি সঠিক JSON নয়");}e.target.value="";};
+$("demoBtn").onclick=()=>{if(db.pandals.length&&!confirm("বর্তমান তালিকার সঙ্গে ডেমো যোগ হবে। চালিয়ে যাবেন?"))return;
+  DEMO.forEach((d,i)=>db.pandals.push({id:"demo"+Date.now()+i,name:d[0],area:d[1],lat:d[2],lng:d[3],theme:"",imageUrl:"",description:"ডেমো তথ্য",verified:false}));save();};
+render();
+</script>
+</body>
+</html>

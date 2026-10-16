@@ -1,30 +1,38 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toursathi/data/models.dart';
 import 'package:toursathi/main.dart';
+import 'package:toursathi/services/store.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('distance between two nearby points is reasonable', () {
+    final d = distanceKm(23.5400, 87.2890, 23.5580, 87.2840);
+    expect(d, greaterThan(1.5));
+    expect(d, lessThan(3));
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('bengali digits', () {
+    expect(bn(2026), '২০২৬');
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  test('import admin json', () async {
+    SharedPreferences.setMockInitialValues({});
+    await store.load();
+    final n = store.importJson(
+        '{"pandals":[{"id":"a","name":"Test","area":"X","lat":23.5,"lng":87.3}],'
+        '"schedule":[{"name":"ষষ্ঠী","date":"2026-10-16"}]}');
+    expect(n, 1);
+    expect(store.pandals.first.name, 'Test');
+    expect(store.schedule.length, 1);
+    store.resetToDemo();
+    expect(store.usingDemo, true);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('app renders home screen', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await store.load();
+    await tester.pumpWidget(const TourSathiApp());
+    expect(find.text('শুভ দুর্গাপূজা'), findsWidgets);
+    await tester.pump(const Duration(seconds: 1));
   });
 }
