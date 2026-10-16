@@ -44,7 +44,7 @@ class _TourHomeState extends State<TourHome> {
     ]))));
     return;
    }
-   if(title.contains('রুট') || title.contains('হপিং') || title.contains('ট্যুর')) {openPlanner();return;}
+   if(title=='রুট' || title.contains('হপিং') || title=='আমার পুজো ট্যুর' || title=='ট্যুর পরিকল্পনা') {openPlanner();return;}
    Navigator.push(context,MaterialPageRoute(builder:(ctx)=>TourSectionPage(section:title)));
  }
  Future<void> openPlanner() async {
@@ -77,7 +77,7 @@ class _TourHomeState extends State<TourHome> {
  Positioned.fill(child:Image.network('https://images.unsplash.com/photo-1604541915015-5c2f956bf2c2?w=800&q=80',fit:BoxFit.cover,errorBuilder:(context,error,stack)=>const ColoredBox(color:Color(0xff0b1743)))),
  Positioned.fill(child:Container(color:const Color(0x99051330))),
  Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
- Row(children:[const Icon(Icons.location_on,color:Colors.white),const Expanded(child:Text('দুর্গাপুর, পশ্চিমবঙ্গ ⌄',style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:17))),IconButton(onPressed:()=>soon('আবহাওয়া'),icon:const Icon(Icons.wb_cloudy,color:Colors.amber)),IconButton(onPressed:()=>soon('নোটিফিকেশন'),icon:const Icon(Icons.notifications,color:Colors.white)),const CircleAvatar(radius:15,child:Icon(Icons.person))]),
+ Row(children:[const Icon(Icons.location_on,color:Colors.white),const Expanded(child:Text('দুর্গাপুর, পশ্চিমবঙ্গ ⌄',style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:17))),IconButton(onPressed:()=>soon('আবহাওয়া'),icon:const Icon(Icons.wb_cloudy,color:Colors.amber)),IconButton(onPressed:()=>openSection('আরও'),icon:const Icon(Icons.notifications,color:Colors.white)),const CircleAvatar(radius:15,child:Icon(Icons.person))]),
  const SizedBox(height:25),const Text('শুভ',style:TextStyle(fontSize:29,color:Colors.amber,fontWeight:FontWeight.w900)),
  const Text('দুর্গাপূজা 🌺',style:TextStyle(fontSize:42,color:Colors.amber,fontWeight:FontWeight.w900)),
  const Text('ঠাকুর দেখুন • ঘুরুন • খান • থাকুন',style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold)),
