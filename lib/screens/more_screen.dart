@@ -77,6 +77,10 @@ class MoreScreen extends StatelessWidget {
           _tile(Icons.add_location_alt, 'নিজের প্যান্ডেল যোগ', 'জানা প্যান্ডেল তালিকায় রাখুন', () => _push(context, const AddPandalScreen())),
           _tile(Icons.restaurant, 'কাছাকাছি খাবার', 'Google Maps-এ', () => Links.searchNear('restaurants', store.base)),
           _tile(Icons.hotel, 'কাছাকাছি হোটেল', 'Google Maps-এ', () => Links.searchNear('hotels', store.base)),
+          _tile(Icons.local_atm, 'কাছাকাছি এটিএম', 'Google Maps-এ', () => Links.searchNear('ATM', store.base)),
+          _tile(Icons.local_gas_station, 'পেট্রোল পাম্প', 'Google Maps-এ', () => Links.searchNear('petrol pump', store.base)),
+          _tile(Icons.local_hospital, 'হাসপাতাল', 'Google Maps-এ', () => Links.searchNear('hospital', store.base)),
+          _tile(Icons.wc, 'পাবলিক শৌচালয়', 'Google Maps-এ', () => Links.searchNear('public toilet', store.base)),
           const _Header('সেটিংস'),
           ListTile(
             leading: const Icon(Icons.my_location),

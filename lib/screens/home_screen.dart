@@ -24,6 +24,21 @@ class HomeScreen extends StatelessWidget {
         final ok = await Links.searchNear(value, store.base);
         if (!ok && context.mounted) snack(context, 'Google Maps খোলা যায়নি');
         return;
+      case 'share':
+        if (store.tour.isEmpty) {
+          store.tab.value = 2;
+          snack(context, 'আগে প্যান্ডেল বেছে ট্যুর তৈরি করুন, তারপর বন্ধুদের পাঠান');
+          return;
+        }
+        final stops = store.tourPandals;
+        final b = StringBuffer('🛵 চল একসাথে ঠাকুর দেখতে যাই! — TourSathi\n');
+        b.writeln('শুরু: ${store.baseArea}');
+        for (var i = 0; i < stops.length; i++) {
+          b.writeln('${bn(i + 1)}. ${stops[i].name}');
+        }
+        b.writeln('\nরুট: ${Links.routeUri(stops, origin: store.base, mode: store.travelMode)}');
+        await Links.whatsapp(b.toString());
+        return;
       case 'screen':
         final Widget page = switch (value) {
           'emergency' => const EmergencyScreen(),
@@ -57,26 +72,32 @@ class HomeScreen extends StatelessWidget {
             sliver: SliverGrid.builder(
               itemCount: categories.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, childAspectRatio: .95, crossAxisSpacing: 8, mainAxisSpacing: 8),
+                crossAxisCount: 3, childAspectRatio: .92, crossAxisSpacing: 10, mainAxisSpacing: 10),
               itemBuilder: (ctx, i) {
                 final c = categories[i];
-                return InkWell(
-                  borderRadius: BorderRadius.circular(14),
-                  onTap: () => runAction(context, c.action),
-                  child: Column(children: [
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(color: c.bg, borderRadius: BorderRadius.circular(14)),
-                        child: Icon(c.icon, color: c.fg, size: 40),
+                return Semantics(
+                  button: true,
+                  label: c.title,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    onTap: () => runAction(context, c.action),
+                    child: Image.asset(
+                      c.asset,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.medium,
+                      errorBuilder: (_, __, ___) => Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xffffe0b3),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(6),
+                        child: Text(c.title,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(c.title, maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                    Text(c.subtitle, maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 10, color: Colors.blueGrey)),
-                  ]),
+                  ),
                 );
               },
             ),

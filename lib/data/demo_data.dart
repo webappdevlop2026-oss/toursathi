@@ -40,30 +40,30 @@ final defaultSchedule = <PujaDay>[
   PujaDay('বিজয়া দশমী', DateTime(2026, 10, 21), 'সিঁদুর খেলা ও বিসর্জন'),
 ];
 
-/// হোম স্ক্রিনের ক্যাটাগরি। action: tab:<i> | maps:<query> | screen:<name>
+/// হোম স্ক্রিনের ক্যাটাগরি (assets/category_icons-এর ছবি)।
+/// action: tab:<i> | maps:<query> | screen:<name> | share:tour
 class Category {
-  final IconData icon;
+  final String asset;
   final String title;
-  final String subtitle;
-  final Color bg;
-  final Color fg;
   final String action;
-  const Category(this.icon, this.title, this.subtitle, this.bg, this.fg, this.action);
+  const Category(this.asset, this.title, this.action);
 }
 
+const _icon = 'assets/category_icons/';
+
 const categories = <Category>[
-  Category(Icons.temple_hindu, 'সব প্যান্ডেল', 'শহর ও এলাকা', Color(0xffffe0b3), Color(0xffc62828), 'tab:1'),
-  Category(Icons.route, 'প্যান্ডেল হপিং', 'রুট প্ল্যান', Color(0xffffd9df), Color(0xffd81b60), 'tab:2'),
-  Category(Icons.restaurant, 'খাবার', 'কাছাকাছি রেস্তোরাঁ', Color(0xffe4d7ff), Color(0xff5e35b1), 'maps:restaurants'),
-  Category(Icons.hotel, 'হোটেল', 'থাকার ব্যবস্থা', Color(0xffd0eefd), Color(0xff1565c0), 'maps:hotels'),
-  Category(Icons.local_parking, 'পার্কিং', 'নিকটবর্তী পার্কিং', Color(0xffe6f1cc), Color(0xff2e7d32), 'maps:parking'),
-  Category(Icons.local_atm, 'এটিএম', 'টাকা তোলা', Color(0xfffff3c4), Color(0xffef6c00), 'maps:ATM'),
-  Category(Icons.local_gas_station, 'পেট্রোল পাম্প', 'জ্বালানি ও গ্যারেজ', Color(0xffffe5c3), Color(0xffe65100), 'maps:petrol pump'),
-  Category(Icons.wc, 'শৌচালয়', 'পাবলিক টয়লেট', Color(0xffe0f2f1), Color(0xff00695c), 'maps:public toilet'),
-  Category(Icons.local_hospital, 'হাসপাতাল', 'চিকিৎসা', Color(0xffdbecff), Color(0xff1565c0), 'maps:hospital'),
-  Category(Icons.emergency, 'জরুরি নম্বর', 'পুলিশ, অ্যাম্বুলেন্স', Color(0xffffdada), Color(0xffc62828), 'screen:emergency'),
-  Category(Icons.calendar_month, 'পুজোর সময়সূচি', 'তিথি ও দিন', Color(0xffeadcff), Color(0xff5e35b1), 'screen:schedule'),
-  Category(Icons.account_balance_wallet, 'ট্যুর বাজেট', 'খরচের হিসাব', Color(0xffdef9d2), Color(0xff2e7d32), 'screen:budget'),
+  Category('${_icon}pandal.png', 'প্যান্ডেল', 'tab:1'),
+  Category('${_icon}route_distance.png', 'রুট ও দূরত্ব', 'tab:1'),
+  Category('${_icon}my_plan.png', 'আমার প্ল্যান', 'tab:2'),
+  Category('${_icon}food_restaurants.png', 'খাবার ও রেস্তোরাঁ', 'maps:restaurants'),
+  Category('${_icon}hotels.png', 'হোটেল ও থাকার ব্যবস্থা', 'maps:hotels'),
+  Category('${_icon}parking.png', 'পার্কিং', 'maps:parking'),
+  Category('${_icon}temples.png', 'মন্দির দর্শন', 'maps:temple'),
+  Category('${_icon}tourist_places.png', 'দর্শনীয় স্থান', 'maps:tourist attractions'),
+  Category('${_icon}group_ride.png', 'গ্রুপ রাইড', 'share:tour'),
+  Category('${_icon}puja_schedule.png', 'পুজোর সময়সূচি', 'screen:schedule'),
+  Category('${_icon}emergency.png', 'জরুরি পরিষেবা', 'screen:emergency'),
+  Category('${_icon}more.png', 'আরও', 'tab:3'),
 ];
 
 /// গাড়ির ধরন → Google Maps travelmode

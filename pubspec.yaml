@@ -1,7 +1,7 @@
 name: toursathi
 description: TourSathi (ট্যুরসাথী) — দুর্গাপুর দুর্গাপূজা ও ভ্রমণ গাইড অ্যাপ
 publish_to: none
-version: 1.0.0+2
+version: 1.1.0+3
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -19,3 +19,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/category_icons/
