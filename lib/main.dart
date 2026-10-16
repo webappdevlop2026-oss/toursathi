@@ -37,11 +37,11 @@ class _TourHomeState extends State<TourHome> {
  @override Widget build(BuildContext context) {
  final matches=places.asMap().entries.where((e)=>(e.value.$1+e.value.$2).contains(filter)).toList();
  return Scaffold(backgroundColor:const Color(0xfffff9ef),body:SafeArea(child:ListView(children:[
- Container(height:255,padding:const EdgeInsets.all(15),decoration:const BoxDecoration(gradient:LinearGradient(colors:[Color(0xff031038),Color(0xff172258),Color(0xffb52f16)])),child:Stack(children:[
+ Container(constraints:const BoxConstraints(minHeight:310),padding:const EdgeInsets.all(15),decoration:const BoxDecoration(gradient:LinearGradient(colors:[Color(0xff031038),Color(0xff172258),Color(0xffb52f16)])),child:Stack(children:[
  Positioned(right:0,top:35,child:Icon(Icons.temple_hindu,size:175,color:Colors.amber.withOpacity(.45))),
  Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
  Row(children:[const Icon(Icons.location_on,color:Colors.white),const Expanded(child:Text('দুর্গাপুর, পশ্চিমবঙ্গ ⌄',style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:17))),IconButton(onPressed:()=>soon('আবহাওয়া'),icon:const Icon(Icons.wb_cloudy,color:Colors.amber)),IconButton(onPressed:()=>soon('নোটিফিকেশন'),icon:const Icon(Icons.notifications,color:Colors.white)),const CircleAvatar(radius:15,child:Icon(Icons.person))]),
- const Spacer(),const Text('শুভ',style:TextStyle(fontSize:29,color:Colors.amber,fontWeight:FontWeight.w900)),
+ const SizedBox(height:25),const Text('শুভ',style:TextStyle(fontSize:29,color:Colors.amber,fontWeight:FontWeight.w900)),
  const Text('দুর্গাপূজা 🌺',style:TextStyle(fontSize:42,color:Colors.amber,fontWeight:FontWeight.w900)),
  const Text('ঠাকুর দেখুন • ঘুরুন • খান • থাকুন',style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold)),
  const SizedBox(height:8),Container(padding:const EdgeInsets.symmetric(horizontal:16,vertical:6),color:const Color(0xfff5083c),child:const Text('সব এক অ্যাপে',style:TextStyle(fontSize:19,color:Colors.white,fontWeight:FontWeight.bold))),const SizedBox(height:8)
